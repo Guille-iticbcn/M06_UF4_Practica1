@@ -13,7 +13,7 @@ def product_schema(product) -> dict:
 def products_schema(products) -> dict:
     return [product_schema(product) for product in products]
 
-
+# Mètode per llegir els productes de la BDD.
 def read():
     try:
         conn = db_client()
@@ -29,7 +29,7 @@ def read():
     
     return result
 
-
+#Mètode per crear productes.
 def create (name, description, company, price, units, subcategory_id):
     try:
         conn = db_client()
@@ -48,7 +48,7 @@ def create (name, description, company, price, units, subcategory_id):
     
     return "S’ha afegit correctement" 
 
-
+#Mètode per canviar les unitats d'un producte introduïnt la ID.
 def update_product(units, product_id):
     try:
         conn = db_client()
@@ -65,7 +65,7 @@ def update_product(units, product_id):
     finally:
         conn.close()
 
-    
+#Mètode per eliminar un producte.
 def delete_product(id):
     try:
         conn = db_client()

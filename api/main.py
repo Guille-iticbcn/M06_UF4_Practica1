@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+#Creem la plantilla amb els atributs del producte.
 class product(BaseModel):
     name:str
     description:str
@@ -15,17 +16,17 @@ class product(BaseModel):
     units:int
     subcategory_id:int
 
-
+#Endpoint de tots el productes.
 @app.get("/product", response_model=List[dict])
 def read_product():
     return product_db.products_schema(product_db.read())
 
-
+#Endpoint per imprimir un únic producte.
 @app.get("/product_id/{id}")
 def read_product(id: int, q:Union[str, None] = None):
     return {"product_id": id, "Body": q}
 
-
+#Endpoint per crear un producte.
 @app.post("/create_product")
 async def create_product(data:product):
     name = data.name
@@ -41,12 +42,12 @@ async def create_product(data:product):
         "name": name
     }
 
-
+#Endpoint per actualitzar les unitats d'un producte per ID.
 @app.put("/update_product/{product_id}")
 def update_product(units:int, product_id:int):
     product_db.update_product(units, product_id)
 
-
+#Endpoint per eliminar un producte.
 @app.delete("/delete_product/{id}")
 def delete_product(id:int):
     product_db.delete_product(id)
