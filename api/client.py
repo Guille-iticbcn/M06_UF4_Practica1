@@ -1,5 +1,6 @@
 import mysql.connector
 
+#Connexió amb la BDD. Li passem tota la informació que necessita.
 def db_client():
     try:
         dbname = "botiga"
