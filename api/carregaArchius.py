@@ -1,6 +1,7 @@
 import csv
 import mysql.connector
 from client import db_client
+import os
 
 connection = db_client()
 cursor = connection.cursor()
@@ -44,6 +45,14 @@ def load_products_from_csv(file_path):
             return {"message": "Càrrega massiva de productes completada correctament."}
     except Exception as e:
         return {"error": str(e)}
+
+def handle_file_upload(file, upload_folder):
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
+    
+    filepath = os.path.join(upload_folder, file.filename)
+    file.save(filepath)
+    return filepath
 
 result = load_products_from_csv('ruta/del/archivo.csv')
 print(result)

@@ -4,8 +4,19 @@ from fastapi import FastAPI
 import product_db
 
 from pydantic import BaseModel
+from flask import Flask, request, jsonify
+import os
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
 
 app = FastAPI()
+# Configuración del directorio de subida
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #Creem la plantilla amb els atributs del producte.
 class product(BaseModel):
@@ -51,3 +62,23 @@ def update_product(units:int, product_id:int):
 @app.delete("/delete_product/{id}")
 def delete_product(id:int):
     product_db.delete_product(id)
+
+@app.route('/upload', methods=['POST'])
+def carregaArxius():
+    if 'file' not in request.files:
+        return jsonify({'message': 'No file part'}), 400
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return jsonify({'message': 'File successfully uploaded', 'filename': filename}), 200
+
+    return jsonify({'message': 'File upload failed'}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
